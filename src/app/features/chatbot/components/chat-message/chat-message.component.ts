@@ -113,8 +113,13 @@ import { ChatMessage } from '../../../../models/chat.model';
             }
           </div>
           @if (message.multiSelect) {
-            <button class="confirm-btn" [disabled]="message.locked" (click)="buttonClicked.emit('confirm-selections')">
-              ✅ Confirm Selection
+            <button
+              class="confirm-btn"
+              [class.confirm-active]="isConfirmActive()"
+              [disabled]="message.locked || !isConfirmActive()"
+              (click)="buttonClicked.emit('confirm-selections')"
+            >
+              Confirm
             </button>
           }
         }
@@ -138,6 +143,13 @@ export class ChatMessageComponent {
   @Output() optionClicked = new EventEmitter<string>();
 
   private readonly noneValues = ['NO_PREFERENCE', 'NONE'];
+
+  /** Confirm is active only for the current (unlocked) multi-select message with at least one chip picked */
+  isConfirmActive(): boolean {
+    return this.message.multiSelect === true
+      && !this.message.locked
+      && this.selectedChips.length > 0;
+  }
 
   isChipDisabled(chipValue: string): boolean {
     if (!this.message.multiSelect || this.selectedChips.length === 0) return false;

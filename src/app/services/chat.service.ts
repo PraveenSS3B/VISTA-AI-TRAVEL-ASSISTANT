@@ -13,7 +13,7 @@ import { ItineraryApiService } from './itinerary-api.service';
 const STEP_ORDER: TripStep[] = [
   'district', 'hotel-name', 'trip-type', 'trip-style',
   'check-in-date', 'check-out-date',
-  'budget-total', 'currency',
+  'currency', 'budget-total',
   'food-preferences', 'avoid-preferences',
   'activity-intensity', 'hotel-services-wanted',
   'special-requests',
@@ -36,6 +36,8 @@ export class ChatService {
   savedTripId = signal<string | null>(null);
   itineraryVersion = signal(0);
   private prefilledSteps = signal<Set<TripStep>>(new Set());
+  private editDatesOriginStep: TripStep | 'confirm-summary' | null = null;
+  private datesBannerId: string | null = null;
 
   currentStepNumber = computed(() => {
     const step = this.tripStep();
@@ -102,7 +104,7 @@ export class ChatService {
   private lockPreviousInteractiveMessages(): void {
     this.messages.update(msgs =>
       msgs.map(m =>
-        (m.buttons?.length || m.chips?.length || m.bookingCards?.length || m.hotelPickCards?.length)
+        !m.neverLock && (m.buttons?.length || m.chips?.length || m.bookingCards?.length || m.hotelPickCards?.length)
           ? { ...m, locked: true }
           : m
       )
@@ -146,7 +148,7 @@ export class ChatService {
     } else if (value.startsWith('select-booking:')) {
       this.selectBookingForItinerary(value.replace('select-booking:', ''));
     } else if (value === 'generate-confirmed') {
-      this.addMessage({ text: '🚀 Generate', sender: 'user' });
+      this.addMessage({ text: '🚀 Yes — Generate!', sender: 'user' });
       this.saveProfileAndGenerate();
     } else if (value === 'retry-save') {
       this.saveProfileAndGenerate();
@@ -166,6 +168,8 @@ export class ChatService {
       this.addMessage({ text: `🏨 ${hotelName}`, sender: 'user' });
       this.tripPrefs.update(p => ({ ...p, hotelName }));
       this.goToNextStep();
+    } else if (value === 'edit-dates') {
+      this.startEditDates();
     } else if (value === 'view-itinerary') {
       this.addMessage({ text: 'Back to main menu', sender: 'user' });
       this.resetTrip(); this.showMainMenu();
@@ -326,6 +330,45 @@ export class ChatService {
     this.persistMessages();
   }
 
+  // ── Edit dates (from summary screen) ────────────────────────
+
+  private insertOrUpdateDatesBanner(checkIn: string, checkOut: string): void {
+    const text = `📅 **Dates confirmed:** ${checkIn} → ${checkOut}\n_You can change these anytime before generating your itinerary._`;
+    const buttons = [{ label: '✏️ Change Dates', value: 'edit-dates' }];
+
+    if (this.datesBannerId) {
+      // Update existing banner in-place
+      this.messages.update(msgs =>
+        msgs.map(m => m.id === this.datesBannerId
+          ? { ...m, text, buttons }
+          : m)
+      );
+    } else {
+      const id = crypto.randomUUID();
+      this.datesBannerId = id;
+      const message: ChatMessage = {
+        id,
+        text,
+        sender: 'bot',
+        timestamp: new Date(),
+        buttons,
+        neverLock: true,
+      };
+      this.messages.update(msgs => [...msgs, message]);
+    }
+  }
+
+  private async startEditDates(): Promise<void> {
+    this.editDatesOriginStep = this.tripStep() as TripStep | 'confirm-summary' | null;
+    this.lockPreviousInteractiveMessages();
+    this.addMessage({ text: '✏️ Change Dates', sender: 'user' });
+    this.tripStep.set('edit-dates-checkin');
+    const current = this.tripPrefs().checkInDate;
+    await this.addBotMessage(
+      `📅 Please select your new **check-in date**${current ? ` (currently **${current}**)` : ''}.`,
+      undefined, 600);
+  }
+
   // ── Step question methods ──────────────────────────────────
 
   private askDistrict(): void {
@@ -390,7 +433,7 @@ export class ChatService {
   private askBudgetTotal(): void {
     this.tripStep.set('budget-total');
     this.addBotMessage(
-      '💰 What is your **total trip budget**?\n\n_Enter a number, e.g. 15000._',
+      '💰 What is your **approximate trip budget**?\n\n_Enter a number, e.g. 15000._',
       undefined, 700);
   }
 
@@ -512,7 +555,8 @@ export class ChatService {
       `Here is a summary of your trip preferences:\n\n${summary}\n\n✅ Shall I **save your preferences and generate your itinerary?**`,
       {
         buttons: [
-          { label: '🚀 Generate', value: 'generate-confirmed' },
+          { label: '🚀 Yes — Generate!', value: 'generate-confirmed' },
+          { label: '✏️ Change Dates', value: 'edit-dates' },
           { label: '✏️ Start Over', value: 'plan-trip' },
         ],
       }, 900);
@@ -571,7 +615,61 @@ export class ChatService {
       }
       this.addMessage({ text: `📅 ${trimmed}`, sender: 'user' });
       this.tripPrefs.update(p => ({ ...p, checkOutDate: trimmed }));
+      const savedCheckIn = this.tripPrefs().checkInDate ?? '';
+      this.insertOrUpdateDatesBanner(savedCheckIn, trimmed);
       this.goToNextStep();
+      this.persistMessages();
+      return;
+    }
+    if (step === 'edit-dates-checkin') {
+      const date = new Date(trimmed);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (isNaN(date.getTime())) {
+        await this.addBotMessage('⚠️ Please select a valid date.', undefined, 400);
+        return;
+      }
+      if (date < today) {
+        await this.addBotMessage('⚠️ Check-in cannot be in the past.', undefined, 400);
+        return;
+      }
+      this.addMessage({ text: `📅 ${trimmed}`, sender: 'user' });
+      // Clear checkout if it is now invalid
+      const prevCheckout = this.tripPrefs().checkOutDate;
+      this.tripPrefs.update(p => ({ ...p, checkInDate: trimmed, ...(prevCheckout && new Date(prevCheckout) <= date ? { checkOutDate: undefined } : {}) }));
+      this.tripStep.set('edit-dates-checkout');
+      const ci = trimmed;
+      await this.addBotMessage(
+        `📅 Now select your new **check-out date** (must be after **${ci}**).`,
+        undefined, 600);
+      this.persistMessages();
+      return;
+    }
+    if (step === 'edit-dates-checkout') {
+      const date = new Date(trimmed);
+      const checkIn = this.tripPrefs().checkInDate;
+      if (isNaN(date.getTime())) {
+        await this.addBotMessage('⚠️ Please select a valid date.', undefined, 400);
+        return;
+      }
+      if (checkIn && date <= new Date(checkIn)) {
+        await this.addBotMessage('⚠️ Check-out must be **after** check-in.', undefined, 400);
+        return;
+      }
+      this.addMessage({ text: `📅 ${trimmed}`, sender: 'user' });
+      this.tripPrefs.update(p => ({ ...p, checkOutDate: trimmed }));
+      // Update the persistent dates banner with the new values
+      const updatedCheckIn = this.tripPrefs().checkInDate ?? '';
+      this.insertOrUpdateDatesBanner(updatedCheckIn, trimmed);
+      // Return to origin: mid-flow step or summary
+      const origin = this.editDatesOriginStep;
+      this.editDatesOriginStep = null;
+      if (!origin || origin === 'confirm-summary') {
+        this.askConfirmSummary();
+      } else {
+        await this.addBotMessage(`✅ Dates updated! Continuing where you left off…`, undefined, 500);
+        this.askStep(origin);
+      }
       this.persistMessages();
       return;
     }
@@ -770,6 +868,8 @@ export class ChatService {
     this.tripStep.set(null);
     this.pendingChips.set([]);
     this.prefilledSteps.set(new Set());
+    this.editDatesOriginStep = null;
+    this.datesBannerId = null;
   }
 
   clearChat(): void {

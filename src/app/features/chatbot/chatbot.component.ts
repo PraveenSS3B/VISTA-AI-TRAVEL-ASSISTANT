@@ -106,7 +106,7 @@ import { ChatMessageComponent } from './components/chat-message/chat-message.com
               </button>
             </div>
             <div class="input-hint">
-              @if (tripStep() === 'check-in-date') { Select a future date }
+              @if (tripStep() === 'check-in-date' || tripStep() === 'edit-dates-checkin') { Select a future date }
               @else { Must be after check-in date }
             </div>
           }
@@ -123,7 +123,7 @@ import { ChatMessageComponent } from './components/chat-message/chat-message.com
                 </svg>
               </button>
             </div>
-            <div class="input-hint">Enter total trip budget</div>
+            <div class="input-hint">Enter approximate trip budget</div>
           }
           <!-- Default text input -->
           @else {
@@ -271,7 +271,8 @@ export class ChatbotComponent implements AfterViewChecked, OnInit {
   // ── Input type helpers ──────────────────────────────────────────
   isDateStep(): boolean {
     const s = this.tripStep();
-    return s === 'check-in-date' || s === 'check-out-date';
+    return s === 'check-in-date' || s === 'check-out-date'
+        || s === 'edit-dates-checkin' || s === 'edit-dates-checkout';
   }
 
   isNumberStep(): boolean {
@@ -279,7 +280,8 @@ export class ChatbotComponent implements AfterViewChecked, OnInit {
   }
 
   minDate(): string {
-    if (this.tripStep() === 'check-out-date') {
+    const s = this.tripStep();
+    if (s === 'check-out-date' || s === 'edit-dates-checkout') {
       const ci = this.chatService.tripPrefs().checkInDate;
       if (ci) {
         const next = new Date(ci);
@@ -292,8 +294,14 @@ export class ChatbotComponent implements AfterViewChecked, OnInit {
 
   async sendDate(): Promise<void> {
     if (!this.dateInput) return;
+    const currentStep = this.tripStep();
     await this.chatService.handleUserInput(this.dateInput);
     this.dateInput = '';
+    // After submitting check-in during edit flow, pre-fill checkout with existing value
+    if (currentStep === 'edit-dates-checkin') {
+      const existingCheckout = this.chatService.tripPrefs().checkOutDate;
+      if (existingCheckout) this.dateInput = existingCheckout;
+    }
     this.shouldScroll = true;
     this.shouldFocus = true;
   }
@@ -320,7 +328,11 @@ export class ChatbotComponent implements AfterViewChecked, OnInit {
   // ── Event forwarding ───────────────────────────────────────────
   onButtonClick(value: string): void {
     this.chatService.handleButtonClick(value);
-    this.shouldScroll = true;
+    if (value === 'edit-dates') {
+      // Pre-fill date input with current check-in so user sees existing value
+      const existingDate = this.chatService.tripPrefs().checkInDate;
+      if (existingDate) this.dateInput = existingDate;
+    }    this.shouldScroll = true;
     this.shouldFocus  = true;
   }
 
