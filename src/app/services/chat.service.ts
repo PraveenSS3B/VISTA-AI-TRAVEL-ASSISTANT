@@ -13,7 +13,7 @@ import { ItineraryApiService } from './itinerary-api.service';
 const STEP_ORDER: TripStep[] = [
   'district', 'hotel-name', 'trip-type', 'trip-style',
   'check-in-date', 'check-out-date',
-  'budget-total', 'currency',
+  'currency', 'budget-total',
   'food-preferences', 'avoid-preferences',
   'activity-intensity', 'hotel-services-wanted',
   'special-requests',
@@ -146,7 +146,7 @@ export class ChatService {
     } else if (value.startsWith('select-booking:')) {
       this.selectBookingForItinerary(value.replace('select-booking:', ''));
     } else if (value === 'generate-confirmed') {
-      this.addMessage({ text: '🚀 Generate', sender: 'user' });
+      this.addMessage({ text: '🚀 Yes — Generate!', sender: 'user' });
       this.saveProfileAndGenerate();
     } else if (value === 'retry-save') {
       this.saveProfileAndGenerate();
@@ -512,7 +512,7 @@ export class ChatService {
       `Here is a summary of your trip preferences:\n\n${summary}\n\n✅ Shall I **save your preferences and generate your itinerary?**`,
       {
         buttons: [
-          { label: '🚀 Generate', value: 'generate-confirmed' },
+          { label: '🚀 Yes — Generate!', value: 'generate-confirmed' },
           { label: '✏️ Start Over', value: 'plan-trip' },
         ],
       }, 900);
