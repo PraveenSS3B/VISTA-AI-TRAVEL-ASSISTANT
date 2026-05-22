@@ -266,12 +266,18 @@ export class ItineraryApiService {
       const isFirst = i === 0;
       const isLast  = i === total - 1;
 
+      // Pick afternoon activities (>= 14:30) for first day since check-in is at 14:00
+      const afternoonBank = bank.filter(a => a.time >= '15:00');
+
       const acts: ItineraryActivity[] = isFirst
-        ? [{ activityId: `ACT_D${i+1}_0`, title: 'Check-in & Freshen Up', type: 'LEISURE', startTime: '14:00', endTime: '15:30', cost: 0, currency: cur, weatherSensitive: false, energyLevel: 'LOW', status: 'PENDING', isHotelService: false, hotelSvcType: null, bookingReference: null, reasoning: ['first day', 'settle in'], version: 1 },
-           ...bank.slice(1, 3).map((a, j) => ({ activityId: `ACT_D${i+1}_${j+1}`, title: a.title, type: a.type as any, startTime: a.time, endTime: a.end, cost: a.cost, currency: cur, weatherSensitive: a.type === 'ATTRACTION', energyLevel: 'LOW' as Intensity, status: 'PENDING' as const, isHotelService: a.type === 'HOTEL_SERVICE', hotelSvcType: a.type === 'HOTEL_SERVICE' ? 'SPA' as HotelSvcType : null, bookingReference: null, bookingStatus: a.type === 'HOTEL_SERVICE' ? 'REQUESTED' as const : undefined, reasoning: [key, 'personalised for you'], version: 1 }))]
+        ? [{ activityId: `ACT_D${i+1}_0`, title: 'Check-in & Freshen Up', type: 'LEISURE', startTime: '14:00', endTime: '15:00', cost: 0, currency: cur, weatherSensitive: false, energyLevel: 'LOW', status: 'PENDING', isHotelService: false, hotelSvcType: null, bookingReference: null, reasoning: ['first day', 'settle in'], version: 1 },
+           ...afternoonBank.map((a, j) => ({ activityId: `ACT_D${i+1}_${j+1}`, title: a.title, type: a.type as any, startTime: a.time, endTime: a.end, cost: a.cost, currency: cur, weatherSensitive: a.type === 'ATTRACTION', energyLevel: 'LOW' as Intensity, status: 'PENDING' as const, isHotelService: a.type === 'HOTEL_SERVICE', hotelSvcType: a.type === 'HOTEL_SERVICE' ? 'SPA' as HotelSvcType : null, bookingReference: null, bookingStatus: a.type === 'HOTEL_SERVICE' ? 'REQUESTED' as const : undefined, reasoning: [key, 'personalised for you'], version: 1 }))]
         : isLast
         ? [{ activityId: `ACT_D${i+1}_0`, title: 'Farewell Breakfast & Checkout', type: 'LEISURE', startTime: '09:00', endTime: '11:00', cost: 0, currency: cur, weatherSensitive: false, energyLevel: 'LOW', status: 'PENDING', isHotelService: false, hotelSvcType: null, bookingReference: null, reasoning: ['last day', 'check-out'], version: 1 }]
         : bank.map((a, j) => ({ activityId: `ACT_D${i+1}_${j}`, title: a.title, type: a.type as any, startTime: a.time, endTime: a.end, cost: a.cost, currency: cur, weatherSensitive: a.type === 'ATTRACTION', energyLevel: 'MEDIUM' as Intensity, status: 'PENDING' as const, isHotelService: a.type === 'HOTEL_SERVICE', hotelSvcType: a.type === 'HOTEL_SERVICE' ? 'SPA' as HotelSvcType : null, bookingReference: null, bookingStatus: a.type === 'HOTEL_SERVICE' ? 'REQUESTED' as const : undefined, reasoning: [key, 'personalised for you'], version: 1 }));
+
+      // Sort activities chronologically
+      acts.sort((a, b) => a.startTime.localeCompare(b.startTime));
 
       return {
         dayNumber: i + 1,

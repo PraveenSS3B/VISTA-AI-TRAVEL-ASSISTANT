@@ -7,6 +7,7 @@ import {
   ProgressCardData, ProgressStage,
 } from '../models/chat.model';
 import { BookingService } from './booking.service';
+import { getHotelSuggestions } from '../models/mock-data';
 import { ItineraryApiService } from './itinerary-api.service';
 
 const STEP_ORDER: TripStep[] = [
@@ -33,6 +34,7 @@ export class ChatService {
   itineraryResult = signal<TripResult | null>(null);
   itineraryPrefs = signal<Partial<TripPreferences>>({});
   savedTripId = signal<string | null>(null);
+  itineraryVersion = signal(0);
   private prefilledSteps = signal<Set<TripStep>>(new Set());
 
   currentStepNumber = computed(() => {
@@ -97,6 +99,16 @@ export class ChatService {
 
   private sleep(ms: number): Promise<void> { return new Promise(r => setTimeout(r, ms)); }
 
+  private lockPreviousInteractiveMessages(): void {
+    this.messages.update(msgs =>
+      msgs.map(m =>
+        (m.buttons?.length || m.chips?.length || m.bookingCards?.length || m.hotelPickCards?.length)
+          ? { ...m, locked: true }
+          : m
+      )
+    );
+  }
+
   private startConversation(): void {
     const saved = localStorage.getItem('chat_history');
     if (saved) {
@@ -134,7 +146,7 @@ export class ChatService {
     } else if (value.startsWith('select-booking:')) {
       this.selectBookingForItinerary(value.replace('select-booking:', ''));
     } else if (value === 'generate-confirmed') {
-      this.addMessage({ text: '🚀 Yes — Save & Generate!', sender: 'user' });
+      this.addMessage({ text: '🚀 Generate', sender: 'user' });
       this.saveProfileAndGenerate();
     } else if (value === 'retry-save') {
       this.saveProfileAndGenerate();
@@ -142,7 +154,18 @@ export class ChatService {
       this.confirmMultiSelectStep();
     } else if (value === 'navigate-itinerary') {
       this.isOpen.set(false);
-      this.router.navigate(['/itinerary']);
+      // Bump version so itinerary component picks up latest data even if already on /itinerary
+      this.itineraryVersion.update(v => v + 1);
+      if (this.router.url.startsWith('/itinerary')) {
+        // Already on the page — component will react via effect()
+      } else {
+        this.router.navigate(['/itinerary']);
+      }
+    } else if (value.startsWith('select-hotel:')) {
+      const hotelName = value.replace('select-hotel:', '');
+      this.addMessage({ text: `🏨 ${hotelName}`, sender: 'user' });
+      this.tripPrefs.update(p => ({ ...p, hotelName }));
+      this.goToNextStep();
     } else if (value === 'view-itinerary') {
       this.addMessage({ text: 'Back to main menu', sender: 'user' });
       this.resetTrip(); this.showMainMenu();
@@ -202,6 +225,7 @@ export class ChatService {
   // ── Step navigation ──────────────────────────────────────────
 
   private goToNextStep(): void {
+    this.lockPreviousInteractiveMessages();
     const currentStep = this.tripStep();
     const currentIdx = currentStep ? STEP_ORDER.indexOf(currentStep) : -1;
     for (let i = currentIdx + 1; i < STEP_ORDER.length; i++) {
@@ -268,19 +292,35 @@ export class ChatService {
     const booking = this.bookingService.allBookings().find(b => b.id === bookingId);
     if (!booking) return;
     this.addMessage({ text: `${booking.hotelName} — ${booking.location}`, sender: 'user' });
+
+    // Infer tripType from guest count
+    const inferredTripType: TripType =
+      booking.guests === 1 ? 'SOLO' :
+      booking.guests === 2 ? 'COUPLE' :
+      booking.guests <= 4  ? 'FAMILY' : 'GROUP';
+
+    const prefilled = new Set<TripStep>([
+      'district', 'hotel-name', 'check-in-date', 'check-out-date',
+      'budget-total', 'currency', 'trip-type',
+    ]);
+
     this.tripPrefs.set({
       district: booking.location,
       hotelName: booking.hotelName,
       checkInDate: booking.checkIn,
       checkOutDate: booking.checkOut,
+      budgetTotal: booking.price,
+      currency: booking.currency,
+      tripType: inferredTripType,
       basedOnBookingId: booking.id,
     });
-    this.prefilledSteps.set(new Set<TripStep>([
-      'district', 'hotel-name', 'check-in-date', 'check-out-date',
-    ]));
+    this.prefilledSteps.set(prefilled);
     this.flow.set('booking-itinerary');
+
+    const tripLabel = { SOLO: 'Solo', COUPLE: 'Couple', FAMILY: 'Family', GROUP: 'Group', BUSINESS: 'Business' }[inferredTripType];
+
     this.addBotMessage(
-      `Wonderful!\n\n**${booking.hotelName}**\n📍 ${booking.location} · 📅 ${booking.checkIn} → ${booking.checkOut}\n🛏 ${booking.roomType} · 👥 ${booking.guests} guest(s)\n\nJust a few questions to personalise your itinerary.`,
+      `Wonderful!\n\n**${booking.hotelName}**\n📍 ${booking.location} · 📅 ${booking.checkIn} → ${booking.checkOut}\n🛏 ${booking.roomType} · 👥 ${booking.guests} guest(s) · ${tripLabel} trip\n💰 Budget: ${booking.currency} ${booking.price.toLocaleString()}\n\nI've pre-filled your details from the booking. Just a few quick preferences to personalise your itinerary!`,
       undefined, 800);
     setTimeout(() => this.goToNextStep(), 600);
     this.persistMessages();
@@ -297,9 +337,15 @@ export class ChatService {
 
   private askHotelName(): void {
     this.tripStep.set('hotel-name');
+    const district = this.tripPrefs().district ?? '';
+    const suggestions = getHotelSuggestions(district);
     this.addBotMessage(
-      'Which **hotel or property** will you be staying at?\n\n_e.g. "Marriott Vizag"_',
+      `Here are our **top Marriott properties** in **${this.capitalize(district || 'your destination')}**. Pick one, or type a hotel name:`,
       undefined, 700);
+    setTimeout(() => {
+      this.addMessage({ text: '', sender: 'bot', hotelPickCards: suggestions });
+      this.persistMessages();
+    }, 300);
   }
 
   private askTripType(): void {
@@ -444,6 +490,7 @@ export class ChatService {
   // ── Summary ──────────────────────────────────────────────────
 
   private async askConfirmSummary(): Promise<void> {
+    this.lockPreviousInteractiveMessages();
     this.tripStep.set('confirm-summary');
     const p = this.tripPrefs();
     const summary = [
@@ -465,7 +512,7 @@ export class ChatService {
       `Here is a summary of your trip preferences:\n\n${summary}\n\n✅ Shall I **save your preferences and generate your itinerary?**`,
       {
         buttons: [
-          { label: '🚀 Yes — Save & Generate!', value: 'generate-confirmed' },
+          { label: '🚀 Generate', value: 'generate-confirmed' },
           { label: '✏️ Start Over', value: 'plan-trip' },
         ],
       }, 900);
@@ -563,9 +610,11 @@ export class ChatService {
       this.tripPrefs.set({ district: trimmed });
       this.prefilledSteps.set(new Set<TripStep>(['district']));
       this.flow.set('trip-planner');
+      const hotelSuggestions = getHotelSuggestions(trimmed);
       await this.addBotMessage(
-        `Great choice! ✈️ **${this.capitalize(trimmed)}**.\n\nNext — **which hotel will you stay at?**`,
+        `Great choice! ✈️ **${this.capitalize(trimmed)}**\n\nHere are our **top Marriott properties** there. Pick one, or type a hotel name:`,
         undefined, 600);
+      this.addMessage({ text: '', sender: 'bot', hotelPickCards: hotelSuggestions });
       this.tripStep.set('hotel-name');
       this.persistMessages();
       return;
@@ -581,6 +630,7 @@ export class ChatService {
   // ── Save profile & generate itinerary ──────────────────────
 
   private async saveProfileAndGenerate(): Promise<void> {
+    this.lockPreviousInteractiveMessages();
     this.tripStep.set('results');
     this.flow.set('generating');
     const prefs = this.tripPrefs();
@@ -702,9 +752,10 @@ export class ChatService {
       return clone;
     });
 
-    // Store results
+    // Store results & bump version so itinerary component reacts
     this.itineraryResult.set(result);
     this.itineraryPrefs.set(prefs);
+    this.itineraryVersion.update(v => v + 1);
     this.flow.set('trip-results');
     this.persistMessages();
   }

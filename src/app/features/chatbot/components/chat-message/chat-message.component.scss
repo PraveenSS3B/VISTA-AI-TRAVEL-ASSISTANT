@@ -1,6 +1,20 @@
 $primary: #8B1D42;
 $gold: #C5A55A;
 
+// ── Locked state: grey out old interactive elements ──────────
+.bubble-group.locked {
+  .chat-btn,
+  .chip,
+  .confirm-btn,
+  .booking-card,
+  .hotel-pick-card {
+    opacity: 0.45;
+    pointer-events: none;
+    cursor: default;
+    filter: grayscale(0.4);
+  }
+}
+
 .message-row {
   display: flex;
   align-items: flex-end;
@@ -368,4 +382,89 @@ $gold: #C5A55A;
   color: var(--text-muted);
   text-align: center;
   font-style: italic;
+}
+
+// ── Hotel pick cards ─────────────────────────────────────────
+.hotel-pick-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 300px;
+}
+
+.hotel-pick-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--card-dark-bg);
+  border: 1.5px solid var(--card-border);
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+
+  &:hover {
+    border-color: $primary;
+    box-shadow: 0 6px 20px rgba($primary, 0.18);
+    transform: translateY(-2px);
+  }
+}
+
+.hotel-pick-img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+
+.hotel-pick-body {
+  padding: 10px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hotel-pick-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.hotel-pick-stars {
+  display: flex;
+  gap: 1px;
+
+  .star {
+    color: $gold;
+    font-size: 0.72rem;
+  }
+}
+
+.hotel-pick-tagline {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hotel-pick-price {
+  margin-top: 4px;
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+
+  .price-value {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: $primary;
+  }
+
+  .price-unit {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+  }
 }

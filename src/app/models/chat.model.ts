@@ -199,6 +199,16 @@ export interface ProgressCardData {
   completed?: boolean;
 }
 
+export interface HotelSuggestion {
+  id: string;
+  name: string;
+  tagline: string;
+  image: string;
+  stars: number;
+  pricePerNight: number;
+  currency: string;
+}
+
 export interface ChatMessage {
   id: string;
   text: string;
@@ -209,4 +219,6 @@ export interface ChatMessage {
   multiSelect?: boolean;
   bookingCards?: BookingCardData[];
   progressCard?: ProgressCardData;
+  hotelPickCards?: HotelSuggestion[];
+  locked?: boolean;
 }

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -68,6 +68,7 @@ import {
       </div>
 
       <div class="itin-body">
+       <div class="itin-card">
 
         <!-- Budget bar -->
         @if (result.budgetSummary) {
@@ -159,14 +160,6 @@ import {
                         </div>
                       </div>
 
-                      <div class="act-badges">
-                        <span class="type-badge" [class]="'type-' + act.type.toLowerCase()">{{ act.type }}</span>
-                        @if (act.weatherSensitive) { <span class="weather-badge">⛅ Weather sensitive</span> }
-                        @if (act.energyLevel) { <span class="energy-badge energy-{{ act.energyLevel.toLowerCase() }}">{{ energyLabel(act.energyLevel) }}</span> }
-                        @if (act.isHotelService && act.hotelSvcType) { <span class="svc-badge">{{ act.hotelSvcType }}</span> }
-                        @if (act.status === 'CONFIRMED' && act.bookingReference) { <span class="ref-badge">Ref: {{ act.bookingReference }}</span> }
-                      </div>
-
                       <!-- Reasoning chips — "Why this?" -->
                       @if (act.reasoning.length) {
                         <div class="act-reasoning">
@@ -190,6 +183,14 @@ import {
                           Show reference <strong>{{ act.bookingReference }}</strong> at the service desk
                         </div>
                       }
+
+                      <div class="act-badges">
+                        <span class="type-badge" [class]="'type-' + act.type.toLowerCase()">{{ act.type }}</span>
+                        @if (act.weatherSensitive) { <span class="weather-badge">⛅ Weather sensitive</span> }
+                        @if (act.energyLevel) { <span class="energy-badge energy-{{ act.energyLevel.toLowerCase() }}">{{ energyLabel(act.energyLevel) }}</span> }
+                        @if (act.isHotelService && act.hotelSvcType) { <span class="svc-badge">{{ act.hotelSvcType }}</span> }
+                        @if (act.status === 'CONFIRMED' && act.bookingReference) { <span class="ref-badge">Ref: {{ act.bookingReference }}</span> }
+                      </div>
 
                       <!-- Hotel service CTA -->
                       @if (act.isHotelService && act.status === 'PENDING') {
@@ -245,6 +246,7 @@ import {
           }
         }
 
+       </div>
       </div>
 
       <!-- Footer -->
@@ -292,6 +294,21 @@ export class ItineraryComponent implements OnInit, OnDestroy {
   ];
 
   private routeSub: any;
+
+  constructor() {
+    // React to new itinerary generation (even when already on this page)
+    effect(() => {
+      this.chat.itineraryVersion(); // track the signal
+      const latest = this.chat.itineraryResult();
+      if (latest) {
+        this.result = latest;
+        this.prefs  = this.chat.itineraryPrefs();
+        this.activeDay = 1;
+        this.isGenerating = false;
+        this.expandedReasoning.clear();
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.routeSub = this.route.queryParams.subscribe((params) => {
@@ -342,7 +359,7 @@ export class ItineraryComponent implements OnInit, OnDestroy {
   }
 
   energyLabel(e: string): string {
-    return ({ LOW: '🌸 Low', MEDIUM: '⚡ Medium', HIGH: '🔥 High' } as any)[e] ?? e;
+    return ({ LOW: '🌸 Activity - Low', MEDIUM: '⚡ Activity - Medium', HIGH: '🔥 Activity - High' } as any)[e] ?? e;
   }
 
   styleLabel(s: string): string {

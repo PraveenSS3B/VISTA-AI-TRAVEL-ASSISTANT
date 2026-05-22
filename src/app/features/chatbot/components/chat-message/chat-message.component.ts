@@ -30,7 +30,7 @@ import { ChatMessage } from '../../../../models/chat.model';
           </svg>
         </div>
       }
-      <div class="bubble-group">
+      <div class="bubble-group" [class.locked]="message.locked">
 
         <!-- Progress card (AI planning experience) -->
         @if (message.progressCard) {
@@ -65,7 +65,7 @@ import { ChatMessage } from '../../../../models/chat.model';
         } @else if (message.bookingCards && message.bookingCards.length > 0) {
           <div class="booking-cards">
             @for (card of message.bookingCards; track card.id) {
-              <button class="booking-card" (click)="buttonClicked.emit('select-booking:' + card.id)">
+              <button class="booking-card" [disabled]="message.locked" (click)="buttonClicked.emit('select-booking:' + card.id)">
                 <img [src]="card.image" [alt]="card.hotelName" class="card-img" />
                 <div class="card-info">
                   <div class="card-hotel">{{ card.hotelName }}</div>
@@ -73,6 +73,29 @@ import { ChatMessage } from '../../../../models/chat.model';
                   <div class="card-dates">📅 {{ card.checkIn }} → {{ card.checkOut }}</div>
                   <div class="card-meta">👥 {{ card.guests }} guest(s) &middot; {{ card.roomType }}</div>
                   <span class="card-status" [class]="'status-' + card.status.toLowerCase()">{{ card.status }}</span>
+                </div>
+              </button>
+            }
+          </div>
+
+        <!-- Hotel pick cards -->
+        } @else if (message.hotelPickCards && message.hotelPickCards.length > 0) {
+          <div class="hotel-pick-cards">
+            @for (hotel of message.hotelPickCards; track hotel.id) {
+              <button class="hotel-pick-card" [disabled]="message.locked" (click)="buttonClicked.emit('select-hotel:' + hotel.name)">
+                <img [src]="hotel.image" [alt]="hotel.name" class="hotel-pick-img" />
+                <div class="hotel-pick-body">
+                  <div class="hotel-pick-name">{{ hotel.name }}</div>
+                  <div class="hotel-pick-stars">
+                    @for (s of getStarsArray(hotel.stars); track s) {
+                      <span class="star">★</span>
+                    }
+                  </div>
+                  <div class="hotel-pick-tagline">{{ hotel.tagline }}</div>
+                  <div class="hotel-pick-price">
+                    <span class="price-value">{{ hotel.currency }} {{ hotel.pricePerNight | number }}</span>
+                    <span class="price-unit"> / night</span>
+                  </div>
                 </div>
               </button>
             }
@@ -89,7 +112,7 @@ import { ChatMessage } from '../../../../models/chat.model';
         @if (message.buttons && message.buttons.length > 0) {
           <div class="bubble-buttons">
             @for (btn of message.buttons; track btn.value) {
-              <button class="chat-btn" (click)="buttonClicked.emit(btn.value)">{{ btn.label }}</button>
+              <button class="chat-btn" [disabled]="message.locked" (click)="buttonClicked.emit(btn.value)">{{ btn.label }}</button>
             }
           </div>
         }
@@ -101,19 +124,19 @@ import { ChatMessage } from '../../../../models/chat.model';
                 class="chip"
                 [class.selected]="selectedChips.includes(chip.value)"
                 [class.disabled]="isChipDisabled(chip.value)"
-                [disabled]="isChipDisabled(chip.value)"
+                [disabled]="message.locked || isChipDisabled(chip.value)"
                 (click)="chipClicked.emit({ value: chip.value, label: chip.label })"
               >{{ chip.label }}</button>
             }
           </div>
           @if (message.multiSelect) {
-            <button class="confirm-btn" (click)="buttonClicked.emit('confirm-selections')">
+            <button class="confirm-btn" [disabled]="message.locked" (click)="buttonClicked.emit('confirm-selections')">
               ✅ Confirm Selection
             </button>
           }
         }
 
-        @if (!message.bookingCards && !message.progressCard) {
+        @if (!message.bookingCards && !message.progressCard && !message.hotelPickCards) {
           <span class="timestamp">{{ message.timestamp | date:'shortTime' }}</span>
         }
       </div>
@@ -141,6 +164,10 @@ export class ChatMessageComponent {
     if (isNone && hasSpecific) return true;
     if (!isNone && hasNone) return true;
     return false;
+  }
+
+  getStarsArray(count: number): number[] {
+    return Array.from({ length: count }, (_, i) => i);
   }
 
   formatText(text: string): string {

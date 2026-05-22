@@ -39,7 +39,7 @@ import { Booking } from '../../../../models/booking.model';
           </div>
         </div>
         <div class="card-footer">
-          <span class="price">\${{ booking.price | number }}</span>
+          <span class="price">{{ booking.currency }} {{ booking.price | number }}</span>
           <span class="booking-id">{{ booking.id }}</span>
           @if (booking.status !== 'Cancelled') {
             <button class="action-btn cancel-btn" (click)="onCancel()">Cancel</button>

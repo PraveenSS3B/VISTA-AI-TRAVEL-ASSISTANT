@@ -10,5 +10,6 @@ export interface Booking {
   guests: number;
   status: BookingStatus;
   price: number;
+  currency: string;
   roomType: string;
 }

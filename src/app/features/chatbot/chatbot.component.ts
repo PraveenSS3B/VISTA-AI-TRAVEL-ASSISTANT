@@ -73,19 +73,6 @@ import { ChatMessageComponent } from './components/chat-message/chat-message.com
           </div>
         </div>
 
-        <!-- Progress bar -->
-        @if (chatService.currentStepNumber() > 0) {
-          <div class="progress-bar-wrap">
-            <div class="progress-info">
-              <span>Step {{ chatService.currentStepNumber() }} of {{ chatService.totalSteps() }}</span>
-              <span>{{ chatService.progressPercent() }}%</span>
-            </div>
-            <div class="progress-track">
-              <div class="progress-fill" [style.width.%]="chatService.progressPercent()"></div>
-            </div>
-          </div>
-        }
-
         <!-- Message stream -->
         <div class="messages-area" #messagesContainer>
           @for (msg of messages(); track msg.id) {
