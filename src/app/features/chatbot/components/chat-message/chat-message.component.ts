@@ -10,24 +10,7 @@ import { ChatMessage } from '../../../../models/chat.model';
     <div class="message-row" [class.user-row]="message.sender === 'user'">
       @if (message.sender === 'bot') {
         <div class="msg-avatar bot-icon-sm">
-          <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="28" height="28" rx="10" fill="url(#hgm)"/>
-            <path d="M9.8 10.2C9.8 7.3 11.7 5.6 14 5.6C16.3 5.6 18.2 7.3 18.2 10.2" fill="white" fill-opacity="0.9"/>
-            <rect x="7.7" y="9.5" width="12.6" height="1.8" rx="0.9" fill="white" fill-opacity="0.95"/>
-            <rect x="10.2" y="8.4" width="7.6" height="1.3" rx="0.65" fill="#C5A55A" fill-opacity="0.75"/>
-            <rect x="8.4" y="11.9" width="11.2" height="9.8" rx="3.8" fill="white" fill-opacity="0.95"/>
-            <circle cx="11.5" cy="16.1" r="1.4" fill="#8B1D42"/>
-            <circle cx="16.5" cy="16.1" r="1.4" fill="#8B1D42"/>
-            <circle cx="11.9" cy="15.6" r="0.5" fill="white"/>
-            <circle cx="16.9" cy="15.6" r="0.5" fill="white"/>
-            <path d="M11.2 19.3Q14 21 16.8 19.3" stroke="#8B1D42" stroke-width="0.9" stroke-linecap="round" fill="none"/>
-            <defs>
-              <linearGradient id="hgm" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#A02050"/>
-                <stop offset="1" stop-color="#8B1D42"/>
-              </linearGradient>
-            </defs>
-          </svg>
+          <img src="/vista-avatar.png" alt="Vista" class="vista-avatar-img" />
         </div>
       }
       <div class="bubble-group">

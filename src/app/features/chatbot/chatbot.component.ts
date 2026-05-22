@@ -41,23 +41,7 @@ import { ChatMessageComponent } from './components/chat-message/chat-message.com
           <div class="header-left">
             <div class="avatar-wrap">
               <div class="bot-avatar">
-                <svg viewBox="0 0 40 40" fill="none">
-                  <rect width="40" height="40" rx="14" fill="url(#hg)"/>
-                  <path d="M14 14.5C14 10.4 16.7 8 20 8C23.3 8 26 10.4 26 14.5" fill="white" fill-opacity="0.9"/>
-                  <rect x="11" y="13.5" width="18" height="2.5" rx="1.25" fill="white" fill-opacity="0.95"/>
-                  <rect x="14.5" y="12" width="11" height="1.8" rx="0.9" fill="#C5A55A" fill-opacity="0.75"/>
-                  <rect x="12" y="17" width="16" height="14" rx="5.5" fill="white" fill-opacity="0.95"/>
-                  <circle cx="16.5" cy="23" r="2" fill="#8B1D42"/>
-                  <circle cx="23.5" cy="23" r="2" fill="#8B1D42"/>
-                  <circle cx="17.1" cy="22.3" r="0.7" fill="white"/>
-                  <circle cx="24.1" cy="22.3" r="0.7" fill="white"/>
-                  <path d="M16 27.5Q20 30 24 27.5" stroke="#8B1D42" stroke-width="1.3" stroke-linecap="round" fill="none"/>
-                  <defs>
-                    <linearGradient id="hg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-                      <stop stop-color="#A02050"/><stop offset="1" stop-color="#8B1D42"/>
-                    </linearGradient>
-                  </defs>
-                </svg>
+                <img src="/vista-avatar.png" alt="Vista" class="vista-avatar-img" />
               </div>
               <span class="online-dot"></span>
             </div>
@@ -102,23 +86,7 @@ import { ChatMessageComponent } from './components/chat-message/chat-message.com
           @if (isTyping()) {
             <div class="typing-row">
               <div class="bot-icon-sm">
-                <svg viewBox="0 0 28 28" fill="none">
-                  <rect width="28" height="28" rx="10" fill="url(#hgs)"/>
-                  <path d="M9.8 10.2C9.8 7.3 11.7 5.6 14 5.6C16.3 5.6 18.2 7.3 18.2 10.2" fill="white" fill-opacity="0.9"/>
-                  <rect x="7.7" y="9.5" width="12.6" height="1.8" rx="0.9" fill="white" fill-opacity="0.95"/>
-                  <rect x="10.2" y="8.4" width="7.6" height="1.3" rx="0.65" fill="#C5A55A" fill-opacity="0.75"/>
-                  <rect x="8.4" y="11.9" width="11.2" height="9.8" rx="3.8" fill="white" fill-opacity="0.95"/>
-                  <circle cx="11.5" cy="16.1" r="1.4" fill="#8B1D42"/>
-                  <circle cx="16.5" cy="16.1" r="1.4" fill="#8B1D42"/>
-                  <circle cx="11.9" cy="15.6" r="0.5" fill="white"/>
-                  <circle cx="16.9" cy="15.6" r="0.5" fill="white"/>
-                  <path d="M11.2 19.3Q14 21 16.8 19.3" stroke="#8B1D42" stroke-width="0.9" stroke-linecap="round" fill="none"/>
-                  <defs>
-                    <linearGradient id="hgs" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
-                      <stop stop-color="#A02050"/><stop offset="1" stop-color="#8B1D42"/>
-                    </linearGradient>
-                  </defs>
-                </svg>
+                <img src="/vista-avatar.png" alt="Vista" class="vista-avatar-img" />
               </div>
               <div class="typing-dots"><span></span><span></span><span></span></div>
             </div>

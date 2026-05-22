@@ -95,8 +95,8 @@ $r-xl:     20px;
   .avatar-wrap {
     position: relative;
     .bot-avatar {
-      width:36px; height:36px; border-radius:10px;
-      svg { width:36px; height:36px; border-radius:10px; display:block; }
+      width:36px; height:36px; border-radius:10px; overflow:hidden;
+      .vista-avatar-img { width:36px; height:36px; display:block; object-fit:cover; border-radius:10px; }
     }
     .online-dot {
       position:absolute; bottom:1px; right:1px;
@@ -148,8 +148,8 @@ $r-xl:     20px;
   display: flex; align-items: flex-end; gap: 8px;
 
   .bot-icon-sm {
-    width:26px; height:26px; flex-shrink:0;
-    svg { width:26px; height:26px; border-radius:8px; display:block; }
+    width:26px; height:26px; flex-shrink:0; border-radius:8px; overflow:hidden;
+    .vista-avatar-img { width:26px; height:26px; display:block; object-fit:cover; border-radius:8px; }
   }
 
   .typing-dots {

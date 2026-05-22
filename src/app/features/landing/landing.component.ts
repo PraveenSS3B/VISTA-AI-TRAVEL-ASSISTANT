@@ -22,14 +22,6 @@ import { ExploreDestinationsComponent } from './components/explore-destinations/
     FooterComponent,
   ],
   template: `
-    <!-- ── Top alert bar (mimics Marriott travel alert) ──────────── -->
-    <div class="alert-bar">
-      <span class="alert-text">
-        <strong>Vista AI</strong> — Your personalised itinerary planner is ready.
-        <a href="#" (click)="$event.preventDefault(); chat.toggleOpen()">Start planning →</a>
-      </span>
-    </div>
-
     <!-- ── Site Header ───────────────────────────────────────────── -->
     <header class="site-header" [class.scrolled]="scrolled()">
 
