@@ -36,7 +36,7 @@ export interface TripPreferences {
   district: string;
   hotelName: string;
   tripType: TripType;
-  tripStyle: TripStyle;
+  tripStyle: TripStyle[];
   checkInDate: string;
   checkOutDate: string;
   budgetTotal: number;
@@ -55,7 +55,7 @@ export interface ProfilePayload {
   district: string;
   hotelName: string;
   tripType: TripType;
-  tripStyle: TripStyle;
+  tripStyle: TripStyle[];
   checkInDate: string;
   checkOutDate: string;
   budgetTotal: number;

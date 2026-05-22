@@ -19,7 +19,7 @@ const STEP_ORDER: TripStep[] = [
   'special-requests',
 ];
 
-const SINGLE_SELECT_STEPS: TripStep[] = ['trip-type', 'trip-style', 'activity-intensity', 'currency'];
+const SINGLE_SELECT_STEPS: TripStep[] = ['trip-type', 'activity-intensity', 'currency'];
 
 @Injectable({ providedIn: 'root' })
 export class ChatService {
@@ -138,10 +138,14 @@ export class ChatService {
 
   handleButtonClick(value: string): void {
     if (value === 'plan-trip') {
-      this.addMessage({ text: '✈️  Plan a New Trip', sender: 'user' });
+      // Clear chat when starting a new trip for a fresh conversation
+      this.messages.set([]);
+      this.addBotMessage('Let\'s plan your perfect trip! ✈️', undefined, 300);
       this.startFreshTripFlow();
     } else if (value === 'booking-itinerary') {
-      this.addMessage({ text: '🏨  I Have a Booking', sender: 'user' });
+      // Clear chat when starting booking flow for a fresh conversation
+      this.messages.set([]);
+      this.addBotMessage('Let\'s build an itinerary from your booking! 🏨', undefined, 300);
       this.startBookingItinerary();
     } else if (value.startsWith('select-booking:')) {
       this.selectBookingForItinerary(value.replace('select-booking:', ''));
@@ -153,6 +157,12 @@ export class ChatService {
     } else if (value === 'confirm-selections') {
       this.confirmMultiSelectStep();
     } else if (value === 'navigate-itinerary') {
+      // Clear chat and reset for next interaction after viewing itinerary
+      this.messages.set([]);
+      this.resetTrip();
+      localStorage.removeItem('chat_history');
+      localStorage.removeItem('chat_flow');
+      localStorage.removeItem('chat_step');
       this.isOpen.set(false);
       // Bump version so itinerary component picks up latest data even if already on /itinerary
       this.itineraryVersion.update(v => v + 1);
@@ -198,7 +208,6 @@ export class ChatService {
     this.addMessage({ text: label, sender: 'user' });
     const step = this.tripStep();
     if (step === 'trip-type') { this.tripPrefs.update(p => ({ ...p, tripType: chipValue as TripType })); this.goToNextStep(); }
-    else if (step === 'trip-style') { this.tripPrefs.update(p => ({ ...p, tripStyle: chipValue as TripStyle })); this.goToNextStep(); }
     else if (step === 'activity-intensity') { this.tripPrefs.update(p => ({ ...p, activityIntensity: chipValue as Intensity })); this.goToNextStep(); }
     else if (step === 'currency') { this.tripPrefs.update(p => ({ ...p, currency: chipValue })); this.goToNextStep(); }
   }
@@ -213,6 +222,10 @@ export class ChatService {
     } else if (step === 'avoid-preferences') {
       this.addMessage({ text: selected.length ? selected.join(', ') : 'Nothing to avoid', sender: 'user' });
       this.tripPrefs.update(p => ({ ...p, avoid: selected.filter(s => s !== 'NONE') as AvoidPref[] }));
+      this.pendingChips.set([]); this.goToNextStep();
+    } else if (step === 'trip-style') {
+      this.addMessage({ text: selected.length ? selected.join(', ') : 'Relaxed', sender: 'user' });
+      this.tripPrefs.update(p => ({ ...p, tripStyle: (selected.length ? selected : ['RELAXED']) as TripStyle[] }));
       this.pendingChips.set([]); this.goToNextStep();
     } else if (step === 'hotel-services-wanted') {
       this.addMessage({ text: selected.length ? selected.join(', ') : 'No services', sender: 'user' });
@@ -363,7 +376,7 @@ export class ChatService {
 
   private askTripStyle(): void {
     this.tripStep.set('trip-style');
-    this.addBotMessage('What **experience style** best describes this trip?', {
+    this.addBotMessage('What **experience style** best describes this trip? _(select all that apply)_', {
       chips: [
         { label: '🌿 Relaxed', value: 'RELAXED' },
         { label: '🏔 Adventure', value: 'ADVENTURE' },
@@ -372,6 +385,7 @@ export class ChatService {
         { label: '🍜 Foodie', value: 'FOODIE' },
         { label: '🎉 Nightlife', value: 'NIGHTLIFE' },
       ],
+      multiSelect: true,
     }, 700);
   }
 
@@ -497,7 +511,7 @@ export class ChatService {
       `📍 **District:** ${p.district ?? '—'}`,
       `🏨 **Hotel:** ${p.hotelName ?? '—'}`,
       `👥 **Trip Type:** ${p.tripType ?? '—'}`,
-      `🌿 **Trip Style:** ${p.tripStyle ?? '—'}`,
+      `🌿 **Trip Style:** ${p.tripStyle?.length ? p.tripStyle.join(', ') : '—'}`,
       `📅 **Check-in:** ${p.checkInDate ?? '—'}`,
       `📅 **Check-out:** ${p.checkOutDate ?? '—'}`,
       `💰 **Budget:** ${p.budgetTotal ?? '—'} ${p.currency ?? ''}`,
@@ -641,7 +655,7 @@ export class ChatService {
       district: prefs.district ?? '',
       hotelName: prefs.hotelName ?? '',
       tripType: prefs.tripType ?? 'COUPLE',
-      tripStyle: prefs.tripStyle ?? 'RELAXED',
+      tripStyle: prefs.tripStyle ?? ['RELAXED'],
       checkInDate: prefs.checkInDate ?? '',
       checkOutDate: prefs.checkOutDate ?? '',
       budgetTotal: prefs.budgetTotal ?? 0,

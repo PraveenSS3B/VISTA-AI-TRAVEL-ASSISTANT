@@ -58,7 +58,7 @@ import {
             <span>{{ capitalize(prefs.tripType ?? 'Trip') }}</span>
             <span class="sep">·</span>
             <span>� {{ prefs.district ?? '' }}</span>
-            @if (prefs.tripStyle) { <span class="sep">·</span><span>{{ styleLabel(prefs.tripStyle) }}</span> }
+            @if (prefs.tripStyle?.length) { <span class="sep">·</span><span>{{ styleLabels(prefs.tripStyle!) }}</span> }
           </div>
         </div>
         <button class="back-btn" (click)="goBack()">
@@ -364,6 +364,10 @@ export class ItineraryComponent implements OnInit, OnDestroy {
 
   styleLabel(s: string): string {
     return ({ RELAXED: '🌿 Relaxed', ADVENTURE: '🏔 Adventure', CULTURAL: '🏛 Cultural', WELLNESS: '🧘 Wellness', FOODIE: '🍜 Foodie', NIGHTLIFE: '🎉 Nightlife' } as any)[s] ?? s;
+  }
+
+  styleLabels(styles: string[]): string {
+    return styles.map(s => this.styleLabel(s)).join(' · ');
   }
 
   capitalize(s: string): string { return s.charAt(0).toUpperCase() + s.slice(1); }

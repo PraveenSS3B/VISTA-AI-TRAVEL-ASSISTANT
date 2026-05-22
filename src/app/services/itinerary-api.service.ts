@@ -215,7 +215,8 @@ export class ItineraryApiService {
 
   private mockDays(prefs: Partial<TripPreferences>): ItineraryDay[] {
     const dest   = this.cap(prefs.district ?? 'your destination');
-    const style  = (prefs.tripStyle ?? 'RELAXED').toLowerCase();
+    const styleArr = prefs.tripStyle ?? ['RELAXED'];
+    const style  = (Array.isArray(styleArr) ? styleArr[0] : styleArr).toLowerCase();
     const key    = this.resolveKey(style);
     const start  = prefs.checkInDate  ? new Date(prefs.checkInDate)  : new Date();
     const end    = prefs.checkOutDate ? new Date(prefs.checkOutDate) : new Date(start.getTime() + 86400000 * 3);
