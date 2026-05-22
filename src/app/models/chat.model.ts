@@ -28,7 +28,8 @@ export type TripStep =
   | 'activity-intensity' | 'hotel-services-wanted'
   | 'special-requests' | 'confirm-summary'
   | 'booking-select'
-  | 'results';
+  | 'results'
+  | 'edit-dates-checkin' | 'edit-dates-checkout';
 
 // ─── Trip preferences — matches backend payload fields exactly ──────────────
 
@@ -220,4 +221,5 @@ export interface ChatMessage {
   progressCard?: ProgressCardData;
   hotelPickCards?: HotelSuggestion[];
   locked?: boolean;
+  neverLock?: boolean;
 }
