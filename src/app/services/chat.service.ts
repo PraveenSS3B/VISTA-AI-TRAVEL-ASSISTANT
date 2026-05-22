@@ -224,8 +224,8 @@ export class ChatService {
       this.tripPrefs.update(p => ({ ...p, avoid: selected.filter(s => s !== 'NONE') as AvoidPref[] }));
       this.pendingChips.set([]); this.goToNextStep();
     } else if (step === 'trip-style') {
-      this.addMessage({ text: selected.length ? selected.join(', ') : 'Relaxed', sender: 'user' });
-      this.tripPrefs.update(p => ({ ...p, tripStyle: (selected.length ? selected : ['RELAXED']) as TripStyle[] }));
+      this.addMessage({ text: selected.length ? selected.join(', ') : 'Leisure', sender: 'user' });
+      this.tripPrefs.update(p => ({ ...p, tripStyle: (selected.length ? selected : ['LEISURE']) as TripStyle[] }));
       this.pendingChips.set([]); this.goToNextStep();
     } else if (step === 'hotel-services-wanted') {
       this.addMessage({ text: selected.length ? selected.join(', ') : 'No services', sender: 'user' });
@@ -378,12 +378,16 @@ export class ChatService {
     this.tripStep.set('trip-style');
     this.addBotMessage('What **experience style** best describes this trip? _(select all that apply)_', {
       chips: [
-        { label: '🌿 Relaxed', value: 'RELAXED' },
-        { label: '🏔 Adventure', value: 'ADVENTURE' },
+        { label: '🌿 Leisure', value: 'LEISURE' },
+        { label: '⚽ Sports & Activity', value: 'SPORTS_ACTIVITY' },
         { label: '🏛 Cultural', value: 'CULTURAL' },
-        { label: '🧘 Wellness', value: 'WELLNESS' },
-        { label: '🍜 Foodie', value: 'FOODIE' },
+        { label: '🏔 Adventure', value: 'ADVENTURE' },
+        { label: '🍜 Food & Dining', value: 'FOOD_AND_DINING' },
         { label: '🎉 Nightlife', value: 'NIGHTLIFE' },
+        { label: '🛍 Shopping', value: 'SHOPPING' },
+        { label: '🧘 Wellness & Spa', value: 'WELLNESS_SPA' },
+        { label: '🌿 Nature', value: 'NATURE' },
+        { label: '🙏 Religious / Spiritual', value: 'RELIGIOUS_SPIRITUAL' },
       ],
       multiSelect: true,
     }, 700);
@@ -653,9 +657,8 @@ export class ChatService {
 
     const payload: ProfilePayload = {
       district: prefs.district ?? '',
-      hotelName: prefs.hotelName ?? '',
       tripType: prefs.tripType ?? 'COUPLE',
-      tripStyle: prefs.tripStyle ?? ['RELAXED'],
+      tripStyle: prefs.tripStyle ?? ['LEISURE'],
       checkInDate: prefs.checkInDate ?? '',
       checkOutDate: prefs.checkOutDate ?? '',
       budgetTotal: prefs.budgetTotal ?? 0,

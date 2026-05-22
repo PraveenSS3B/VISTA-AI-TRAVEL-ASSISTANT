@@ -3,7 +3,7 @@
 export type MessageSender = 'bot' | 'user';
 
 export type TripType    = 'SOLO' | 'COUPLE' | 'FAMILY' | 'GROUP' | 'BUSINESS';
-export type TripStyle   = 'RELAXED' | 'ADVENTURE' | 'CULTURAL' | 'WELLNESS' | 'FOODIE' | 'NIGHTLIFE';
+export type TripStyle   = 'LEISURE' | 'SPORTS_ACTIVITY' | 'CULTURAL' | 'ADVENTURE' | 'FOOD_AND_DINING' | 'NIGHTLIFE' | 'SHOPPING' | 'WELLNESS_SPA' | 'NATURE' | 'RELIGIOUS_SPIRITUAL';
 export type Intensity   = 'LOW' | 'MEDIUM' | 'HIGH';
 
 export type FoodPref    = 'SEAFOOD' | 'VEGETARIAN' | 'VEGAN' | 'LOCAL_CUISINE' | 'CONTINENTAL' | 'STREET_FOOD' | 'FINE_DINING' | 'NO_PREFERENCE';
@@ -53,7 +53,6 @@ export interface TripPreferences {
 
 export interface ProfilePayload {
   district: string;
-  hotelName: string;
   tripType: TripType;
   tripStyle: TripStyle[];
   checkInDate: string;

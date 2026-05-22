@@ -363,7 +363,7 @@ export class ItineraryComponent implements OnInit, OnDestroy {
   }
 
   styleLabel(s: string): string {
-    return ({ RELAXED: '🌿 Relaxed', ADVENTURE: '🏔 Adventure', CULTURAL: '🏛 Cultural', WELLNESS: '🧘 Wellness', FOODIE: '🍜 Foodie', NIGHTLIFE: '🎉 Nightlife' } as any)[s] ?? s;
+    return ({ LEISURE: '🌿 Leisure', SPORTS_ACTIVITY: '⚽ Sports', CULTURAL: '🏛 Cultural', ADVENTURE: '🏔 Adventure', FOOD_AND_DINING: '🍜 Food & Dining', NIGHTLIFE: '🎉 Nightlife', SHOPPING: '🛍 Shopping', WELLNESS_SPA: '🧘 Wellness', NATURE: '🌿 Nature', RELIGIOUS_SPIRITUAL: '🙏 Spiritual' } as any)[s] ?? s;
   }
 
   styleLabels(styles: string[]): string {

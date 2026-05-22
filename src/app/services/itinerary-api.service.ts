@@ -215,7 +215,7 @@ export class ItineraryApiService {
 
   private mockDays(prefs: Partial<TripPreferences>): ItineraryDay[] {
     const dest   = this.cap(prefs.district ?? 'your destination');
-    const styleArr = prefs.tripStyle ?? ['RELAXED'];
+    const styleArr = prefs.tripStyle ?? ['LEISURE'];
     const style  = (Array.isArray(styleArr) ? styleArr[0] : styleArr).toLowerCase();
     const key    = this.resolveKey(style);
     const start  = prefs.checkInDate  ? new Date(prefs.checkInDate)  : new Date();
@@ -291,8 +291,10 @@ export class ItineraryApiService {
 
   private resolveKey(style: string): string {
     const map: Record<string, string> = {
-      relaxed: 'relaxed', adventure: 'adventure', cultural: 'cultural',
-      wellness: 'relaxed', foodie: 'foodie', nightlife: 'relaxed',
+      leisure: 'relaxed', sports_activity: 'adventure', cultural: 'cultural',
+      adventure: 'adventure', food_and_dining: 'foodie', nightlife: 'relaxed',
+      shopping: 'cultural', wellness_spa: 'relaxed', nature: 'adventure',
+      religious_spiritual: 'cultural',
       honeymoon: 'romantic', family: 'cultural',
     };
     return map[style] ?? 'relaxed';
