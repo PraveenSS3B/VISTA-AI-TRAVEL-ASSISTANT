@@ -9,23 +9,6 @@ import { ChatService } from '../../../../services/chat.service';
   template: `
     <footer class="footer">
 
-      <!-- App promo row -->
-      <div class="app-row">
-        <div class="app-row-inner">
-          <div class="app-icon">
-            <svg width="36" height="36" viewBox="0 0 44 44" fill="none">
-              <path d="M8 10 L22 34 L36 10" stroke="#8B1D42" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <circle cx="36" cy="10" r="2.5" fill="#8B1D42" opacity="0.9"/>
-            </svg>
-          </div>
-          <div>
-            <div class="app-title">Unlock extraordinary experiences with Vista AI™</div>
-            <div class="app-sub">Wherever you go, Vista gives you a personalised itinerary built around you.</div>
-          </div>
-          <button class="app-cta" (click)="chat.toggleOpen()">Start Planning ✨</button>
-        </div>
-      </div>
-
       <!-- Main footer grid -->
       <div class="footer-main">
         <div class="footer-grid">
