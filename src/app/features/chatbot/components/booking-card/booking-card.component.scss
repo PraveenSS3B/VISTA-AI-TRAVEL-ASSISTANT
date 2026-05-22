@@ -1,0 +1,103 @@
+$primary: #8B1D42;
+$secondary: #C5A55A;
+
+.booking-card {
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--card-bg, #fff);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid var(--card-border, rgba(0, 0, 0, 0.04));
+
+  &:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0, 0, 0, 0.13); }
+  &.cancelled { opacity: 0.65; }
+
+  .hotel-img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+  }
+
+  .card-body { padding: 10px 12px; }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
+
+  .hotel-name {
+    font-size: 0.88rem;
+    font-weight: 700;
+    margin: 0 0 2px;
+    color: var(--text-primary, #1a1a2e);
+  }
+
+  .location { font-size: 0.73rem; color: var(--text-muted, #888); }
+
+  .status-badge {
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 12px;
+    white-space: nowrap;
+
+    &.status-confirmed { background: #e6f9f0; color: #27ae60; }
+    &.status-pending   { background: #fff8e1; color: #f39c12; }
+    &.status-cancelled { background: #fdecea; color: #e74c3c; }
+  }
+
+  .card-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .detail {
+    display: flex;
+    flex-direction: column;
+    .label { font-size: 0.67rem; color: var(--text-muted, #aaa); text-transform: uppercase; letter-spacing: 0.04em; }
+    .value { font-size: 0.78rem; font-weight: 600; color: var(--text-primary, #1a1a2e); }
+    .room { font-size: 0.72rem; }
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    padding-top: 8px;
+
+    border-color: var(--card-border, rgba(0,0,0,0.05));
+
+    .price {
+      font-size: 1rem;
+      font-weight: 700;
+      color: $primary;
+    }
+
+    .booking-id {
+      font-size: 0.7rem;
+      color: var(--text-muted, #aaa);
+      flex: 1;
+    }
+
+    .action-btn {
+      padding: 4px 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      &:hover { opacity: 0.8; }
+    }
+
+    .cancel-btn {
+      background: #fdecea;
+      color: #e74c3c;
+    }
+  }
+}

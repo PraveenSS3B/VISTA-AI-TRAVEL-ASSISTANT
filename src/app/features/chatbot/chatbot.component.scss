@@ -1,0 +1,267 @@
+// ── Tokens ──────────────────────────────────────────────────────
+$primary:  #8B1D42;
+$primary-d:#6E1635;
+$gold:     #C5A55A;
+$shadow:   0 20px 60px rgba(0,0,0,0.18);
+$r-xl:     20px;
+
+// ── FAB wrap ─────────────────────────────────────────────────────
+.chat-fab-wrap {
+  position: fixed;
+  top: 50%;
+  right: 24px;
+  transform: translateY(-50%);
+  z-index: 9999;
+}
+
+.chat-fab {
+  position: relative;
+  width: 62px; height: 62px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #A02050 0%, $primary 50%, #6E1635 100%);
+  border: none; cursor: pointer;
+  box-shadow: 0 8px 30px rgba($primary,0.5), 0 2px 8px rgba(0,0,0,0.15);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.2s, box-shadow 0.2s, border-radius 0.2s;
+
+  &:hover {
+    transform: scale(1.08) translateX(-2px);
+    box-shadow: 0 14px 40px rgba($primary,0.65);
+    .fab-tooltip { opacity:1; transform: translateY(-50%) translateX(0); pointer-events:auto; }
+  }
+
+  .fab-tooltip {
+    position: absolute; right: calc(100% + 14px); top: 50%;
+    transform: translateY(-50%) translateX(10px);
+    background: #1a1a2e; color:#fff;
+    font-size: 0.8rem; font-weight:600; white-space:nowrap;
+    padding: 10px 16px; border-radius:12px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+    opacity:0; pointer-events:none;
+    transition: opacity 0.22s, transform 0.22s;
+    &::after {
+      content:''; position:absolute; right:-8px; top:50%; transform:translateY(-50%);
+      border:8px solid transparent; border-right:none; border-left-color:#1a1a2e;
+    }
+  }
+
+  .fab-vista { width:34px; height:34px; filter:drop-shadow(0 1px 3px rgba(0,0,0,0.25)); }
+
+  .badge {
+    position:absolute; top:-5px; right:-5px;
+    background:$gold; color:#fff; font-size:0.65rem; font-weight:700;
+    border-radius:50%; width:20px; height:20px;
+    display:flex; align-items:center; justify-content:center;
+    border:2px solid #fff;
+  }
+}
+
+.pulse { animation: pulse-ring 2s ease infinite; }
+@keyframes pulse-ring {
+  0%   { box-shadow: 0 8px 30px rgba($primary,0.45), 0 0 0 0 rgba($primary,0.4); }
+  70%  { box-shadow: 0 8px 30px rgba($primary,0.45), 0 0 0 14px rgba($primary,0); }
+  100% { box-shadow: 0 8px 30px rgba($primary,0.45), 0 0 0 0 rgba($primary,0); }
+}
+
+// ── Chat window ──────────────────────────────────────────────────
+.chat-window {
+  position: fixed;
+  bottom: 24px; right: 28px;
+  width: 400px; max-height: 95vh;
+  background: var(--chat-bg);
+  backdrop-filter: blur(16px);
+  border-radius: $r-xl;
+  box-shadow: $shadow;
+  display: flex; flex-direction: column;
+  overflow: hidden; z-index: 9998;
+  border: 1px solid var(--chat-border);
+  color: var(--text-primary);
+
+  @media (max-width: 480px) {
+    width: calc(100vw - 16px); right: 8px; bottom: 8px;
+    max-height: calc(100dvh - 16px); border-radius: 16px;
+  }
+}
+
+// ── Header ───────────────────────────────────────────────────────
+.chat-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px;
+  background: linear-gradient(135deg, $primary 0%, #6E1635 100%);
+  color: #fff; flex-shrink: 0;
+
+  .header-left { display:flex; align-items:center; gap:10px; }
+
+  .avatar-wrap {
+    position: relative;
+    .bot-avatar {
+      width:36px; height:36px; border-radius:10px;
+      svg { width:36px; height:36px; border-radius:10px; display:block; }
+    }
+    .online-dot {
+      position:absolute; bottom:1px; right:1px;
+      width:9px; height:9px; background:#4caf50;
+      border-radius:50%; border:2px solid #fff;
+    }
+  }
+
+  .header-info {
+    display:flex; flex-direction:column;
+    .bot-name { font-weight:700; font-size:0.88rem; }
+    .bot-status {
+      display:flex; align-items:center; gap:4px; font-size:0.71rem; opacity:0.85;
+      .status-dot {
+        width:7px; height:7px; border-radius:50%; background:#4caf50;
+        box-shadow:0 0 0 2px rgba(76,175,80,0.3);
+        animation: pulse-green 2s ease infinite;
+      }
+    }
+  }
+
+  .header-actions { display:flex; gap:6px; }
+}
+
+@keyframes pulse-green {
+  0%,100% { box-shadow:0 0 0 2px rgba(76,175,80,0.3); }
+  50%      { box-shadow:0 0 0 4px rgba(76,175,80,0.1); }
+}
+
+.icon-btn {
+  background:rgba(255,255,255,0.15); border:none; border-radius:8px;
+  color:#fff; width:28px; height:28px; cursor:pointer; font-size:0.85rem;
+  display:flex; align-items:center; justify-content:center; transition:background 0.2s;
+  &:hover { background:rgba(255,255,255,0.28); }
+}
+
+// ── Messages area ────────────────────────────────────────────────
+.messages-area {
+  flex: 1; overflow-y: auto; padding: 14px 12px 8px;
+  display: flex; flex-direction: column; gap: 8px; scroll-behavior: smooth;
+
+  &::-webkit-scrollbar { width:4px; }
+  &::-webkit-scrollbar-track { background:transparent; }
+  &::-webkit-scrollbar-thumb { background:rgba($primary,0.25); border-radius:4px; }
+}
+
+// ── Typing indicator ─────────────────────────────────────────────
+.typing-row {
+  display: flex; align-items: flex-end; gap: 8px;
+
+  .bot-icon-sm {
+    width:26px; height:26px; flex-shrink:0;
+    svg { width:26px; height:26px; border-radius:8px; display:block; }
+  }
+
+  .typing-dots {
+    display:flex; align-items:center; gap:4px;
+    background: var(--typing-bg); padding:10px 14px; border-radius:16px 16px 16px 4px;
+
+    span {
+      width:7px; height:7px; background:$primary; border-radius:50%; opacity:0.6;
+      animation: bounce-dot 1.2s ease-in-out infinite;
+      &:nth-child(2) { animation-delay:0.2s; }
+      &:nth-child(3) { animation-delay:0.4s; }
+    }
+  }
+}
+
+@keyframes bounce-dot {
+  0%,60%,100% { transform:translateY(0); opacity:0.6; }
+  30%          { transform:translateY(-6px); opacity:1; }
+}
+
+// ── Input zone — always visible ──────────────────────────────────
+.input-zone {
+  border-top: 1px solid var(--input-zone-border);
+  background: var(--input-zone-bg); flex-shrink: 0; padding: 8px 12px 10px;
+}
+
+// Suggestion chips
+.suggestions {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px;
+}
+
+.sug-chip {
+  padding: 5px 13px; border-radius: 18px;
+  background: var(--sug-chip-bg); border: 1.5px solid var(--sug-chip-border);
+  color: var(--sug-chip-text); font-size: 0.78rem; font-weight: 600;
+  cursor: pointer; transition: background 0.18s, border-color 0.18s, color 0.18s;
+
+  &:hover { background: $primary; color: #fff; border-color: $primary; }
+}
+
+// Input row
+.input-row {
+  display: flex; gap: 8px; align-items: flex-end;
+}
+
+.chat-textarea {
+  flex: 1; resize: none; overflow: hidden;
+  padding: 10px 14px; line-height: 1.5;
+  border-radius: 20px;
+  border: 1.5px solid var(--input-field-border);
+  font-size: 0.87rem; font-family: inherit;
+  background: var(--input-field-bg); color: var(--input-field-text);
+  outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+  max-height: 120px; overflow-y: auto;
+
+  &:focus { border-color: $primary; box-shadow: 0 0 0 3px rgba($primary,0.1); }
+  &::placeholder { color: var(--input-field-placeholder); }
+  // NEVER truly disabled — just visual indicator when AI is typing
+  &:disabled { opacity: 0.65; }
+}
+
+.send-btn {
+  width: 42px; height: 42px; flex-shrink: 0;
+  border-radius: 50%; border: none; cursor: pointer;
+  background: linear-gradient(135deg, $primary, $gold);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 14px rgba($primary,0.4);
+  transition: transform 0.18s, opacity 0.18s;
+
+  &:hover:not(:disabled) { transform: scale(1.1); }
+  &:disabled { opacity: 0.35; cursor: not-allowed; }
+}
+
+.input-hint {
+  font-size: 0.67rem; color: var(--input-hint-text); margin-top: 5px; text-align: center;
+}
+
+// ── Progress bar ──────────────────────────────────────────────
+.progress-bar-wrap {
+  padding: 8px 16px;
+  background: var(--progress-bar-bg);
+  border-bottom: 1px solid var(--progress-border);
+}
+.progress-info {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.7rem; color: var(--text-muted); margin-bottom: 4px;
+}
+.progress-track {
+  height: 4px; background: var(--progress-track); border-radius: 2px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%; background: linear-gradient(90deg, $primary, #A02050);
+  border-radius: 2px; transition: width 0.4s ease;
+}
+
+// ── Date & number inputs ──────────────────────────────────────
+.chat-date-input,
+.chat-number-input {
+  flex: 1;
+  border: 1.5px solid var(--date-input-border);
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  background: var(--date-input-bg);
+  color: var(--date-input-text);
+  outline: none;
+  transition: border-color 0.2s;
+  &:focus { border-color: var(--date-input-focus); }
+}
+.chat-number-input {
+  -moz-appearance: textfield;
+  appearance: textfield;
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button { -webkit-appearance: none; appearance: none; margin: 0; }
+}

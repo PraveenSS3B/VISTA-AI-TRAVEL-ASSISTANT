@@ -1,0 +1,187 @@
+/* ── Reset & Base ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --primary: #8B1D42;
+  --primary-light: #A02050;
+  --secondary: #C5A55A;
+  --bg: #ffffff;
+  --bg-dark: #1A0A12;
+  --text-primary: #1C1C2E;
+  --text-secondary: #555566;
+  --text-muted: #888899;
+  --card-bg: #ffffff;
+  --nav-bg: rgba(255,255,255,0.92);
+  --section-bg: #ffffff;
+  --alt-bg: #FDF8F5;
+  --footer-bg: #1A0A12;
+  --bubble-bot: #FBF0F3;
+  --bubble-bot-text: #1C1C2E;
+  --input-bg: #ffffff;
+  --input-area-bg: #ffffff;
+  --toolbar-bg: #FDF8F5;
+  --chat-bg: rgba(255,255,255,0.96);
+  --chat-border: rgba(255,255,255,0.3);
+  --tag-bg: #FBF0F3;
+  --chip-bg: #FBF0F3;
+  --chip-border: #E8C0CC;
+  --chip-text: #8B1D42;
+  --chip-hover-bg: #F5E0E8;
+  --input-zone-bg: #ffffff;
+  --input-zone-border: rgba(0,0,0,0.07);
+  --input-field-bg: #FDF8F5;
+  --input-field-text: #1C1C2E;
+  --input-field-border: rgba(139,29,66,0.22);
+  --input-field-placeholder: #aaa;
+  --input-hint-text: #bbb;
+  --typing-bg: #FBF0F3;
+  --progress-track: #e0e0e0;
+  --progress-bar-bg: #FDF8F5;
+  --progress-border: #F0E0E5;
+  --card-border: #F0E0E5;
+  --card-dark-bg: #ffffff;
+  --sug-chip-bg: #FBF0F3;
+  --sug-chip-text: #8B1D42;
+  --sug-chip-border: rgba(139,29,66,0.2);
+  --stage-label: #444;
+  --stage-active-label: #1C1C2E;
+  --stage-pending-label: #999;
+  --pending-icon-color: #bbb;
+  --date-input-bg: #fff;
+  --date-input-text: #222;
+  --date-input-border: #ddd;
+  --date-input-focus: #8B1D42;
+  --header-bg: #ffffff;
+  --nav-border: #e0e0e0;
+  --nav-link-color: #333;
+  --nav-link-hover: #1a1a2e;
+  --nav-active-border: #1a1a2e;
+  --logo-color: #1a1a2e;
+  --util-link-color: #666;
+  --util-sep-bg: #e0e0e0;
+  --brands-bg: #f9f9f7;
+  --brands-title-color: #1a1a2e;
+  --tier-border: #1a1a2e;
+  --tier-label-color: #666;
+  --tier-desc-color: #666;
+  --pill-bg: #ffffff;
+  --pill-border: #e0e0e0;
+  --pill-color: #1a1a2e;
+  --card-hover-bg: rgba(255,255,255,0.05);
+  --widget-bg: #ffffff;
+  --widget-tab-color: #aaa;
+  --widget-tab-active: #1a1a2e;
+  --widget-input-bg: #fff;
+  --widget-input-border: #e0e0e0;
+  --widget-input-color: #1a1a2e;
+  --widget-label-color: #888;
+  --explore-bg: #f8f7ff;
+  --explore-border: rgba(0,0,0,0.07);
+  --explore-link-color: #1a1a2e;
+  --amenity-tag-bg: rgba(139,29,66,0.08);
+  --amenity-tag-color: #8B1D42;
+  --testimonial-quote-color: #555;
+}
+
+[data-theme='dark'] {
+  --bg: #1A0A12;
+  --bg-dark: #0F0609;
+  --text-primary: #F0E8EC;
+  --text-secondary: #C8B0BC;
+  --text-muted: #8E6E7E;
+  --card-bg: rgba(255,255,255,0.05);
+  --nav-bg: rgba(26,10,18,0.92);
+  --section-bg: #1A0A12;
+  --alt-bg: rgba(139,29,66,0.06);
+  --footer-bg: #0F0609;
+  --bubble-bot: rgba(139,29,66,0.15);
+  --bubble-bot-text: #F0E8EC;
+  --input-bg: rgba(255,255,255,0.07);
+  --input-area-bg: rgba(255,255,255,0.04);
+  --toolbar-bg: rgba(255,255,255,0.03);
+  --chat-bg: rgba(26,10,18,0.97);
+  --chat-border: rgba(255,255,255,0.08);
+  --tag-bg: rgba(139,29,66,0.14);
+  --chip-bg: rgba(139,29,66,0.12);
+  --chip-border: rgba(139,29,66,0.35);
+  --chip-text: #D4A0B0;
+  --chip-hover-bg: rgba(139,29,66,0.25);
+  --input-zone-bg: rgba(20,20,35,0.97);
+  --input-zone-border: rgba(255,255,255,0.07);
+  --input-field-bg: rgba(255,255,255,0.07);
+  --input-field-text: #e0e0f0;
+  --input-field-border: rgba(255,255,255,0.15);
+  --input-field-placeholder: #555;
+  --input-hint-text: #444;
+  --typing-bg: rgba(255,255,255,0.08);
+  --progress-track: #333;
+  --progress-bar-bg: #1A0A12;
+  --progress-border: #3A1A25;
+  --card-border: rgba(139,29,66,0.25);
+  --card-dark-bg: #1E0E16;
+  --sug-chip-bg: rgba(139,29,66,0.12);
+  --sug-chip-text: #D4A0B0;
+  --sug-chip-border: rgba(139,29,66,0.3);
+  --stage-label: #ccc;
+  --stage-active-label: #F0E8EC;
+  --stage-pending-label: #777;
+  --pending-icon-color: #666;
+  --date-input-bg: #1E0E16;
+  --date-input-text: #eee;
+  --date-input-border: #444;
+  --date-input-focus: #A02050;
+  --header-bg: #0d0d1a;
+  --nav-border: rgba(255,255,255,0.08);
+  --nav-link-color: #ccc;
+  --nav-link-hover: #fff;
+  --nav-active-border: #D4A0B0;
+  --logo-color: #e0e0f0;
+  --util-link-color: #bbb;
+  --util-sep-bg: rgba(255,255,255,0.12);
+  --brands-bg: #12121f;
+  --brands-title-color: #e0e0f0;
+  --tier-border: #D4A0B0;
+  --tier-label-color: #888;
+  --tier-desc-color: #999;
+  --pill-bg: #1e1e30;
+  --pill-border: rgba(255,255,255,0.1);
+  --pill-color: #ddd;
+  --card-hover-bg: rgba(255,255,255,0.05);
+  --widget-bg: #1a1a2e;
+  --widget-tab-color: #aaa;
+  --widget-tab-active: #e0e0f0;
+  --widget-input-bg: #252540;
+  --widget-input-border: rgba(255,255,255,0.15);
+  --widget-input-color: #e0e0f0;
+  --widget-label-color: #aaa;
+  --explore-bg: var(--bg-dark);
+  --explore-border: rgba(255,255,255,0.06);
+  --explore-link-color: #b0b0c8;
+  --amenity-tag-bg: rgba(139,29,66,0.15);
+  --amenity-tag-color: #D4A0B0;
+  --testimonial-quote-color: #c0c0d8;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  background: var(--bg);
+  color: var(--text-primary);
+  transition: background 0.3s ease, color 0.3s ease;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Scrollbar ────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(139, 29, 66, 0.25); border-radius: 6px; }
+
+/* ── Utilities ────────────────────────────────────────────── */
+img { max-width: 100%; display: block; }
+button { font-family: inherit; }
+a { color: inherit; }
+
+/* ── Google Fonts ─────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');

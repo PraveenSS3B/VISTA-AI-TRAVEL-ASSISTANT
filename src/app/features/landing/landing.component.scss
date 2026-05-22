@@ -1,0 +1,343 @@
+// ── Tokens ──────────────────────────────────────────────────────────────────
+$navy:    #1a1a2e;
+$primary: #8B1D42;
+$gold:    #c9a84c;
+$border:  #e0e0e0;
+$muted:   #666;
+$white:   #fff;
+
+// ── Alert bar ────────────────────────────────────────────────────────────────
+.alert-bar {
+  background: $navy;
+  color: $white;
+  text-align: center;
+  padding: 9px 20px;
+  font-size: 0.82rem;
+  line-height: 1.4;
+
+  .alert-text a {
+    color: #a89fff;
+    font-weight: 600;
+    text-decoration: none;
+    margin-left: 6px;
+    &:hover { text-decoration: underline; }
+  }
+}
+
+// ── Site Header ──────────────────────────────────────────────────────────────
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: var(--header-bg);
+  transition: box-shadow 0.3s;
+
+  &.scrolled { box-shadow: 0 2px 16px rgba(0,0,0,0.12); }
+}
+
+// Utility row
+.utility-row {
+  border-bottom: 1px solid var(--nav-border);
+}
+
+.utility-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 40px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  @media (max-width: 768px) { padding: 0 16px; }
+}
+
+.utility-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.util-link {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.74rem;
+  color: var(--util-link-color);
+  text-decoration: none;
+  padding: 4px 8px;
+  font-weight: 500;
+  border-radius: 3px;
+  transition: color 0.2s;
+
+  &:hover { color: var(--nav-link-hover); }
+
+  @media (max-width: 640px) { display: none; }
+}
+
+.util-sep {
+  width: 1px;
+  height: 14px;
+  background: var(--util-sep-bg);
+  @media (max-width: 640px) { display: none; }
+}
+
+.util-signin-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--logo-color);
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 3px;
+  transition: background 0.2s;
+
+  &:hover { background: rgba(0,0,0,0.05); }
+}
+
+.theme-toggle {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 3px 6px;
+  border-radius: 6px;
+  transition: background 0.2s;
+  &:hover { background: rgba(0,0,0,0.06); }
+}
+
+// Main nav row
+.nav-row {
+  border-bottom: 1px solid var(--nav-border);
+}
+
+.nav-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 40px;
+  height: 62px;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+
+  @media (max-width: 768px) { padding: 0 16px; height: 56px; }
+}
+
+// Logo
+.nav-brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  flex-shrink: 0;
+  margin-right: 28px;
+  padding: 12px 0;
+}
+
+.bonvoy-logo-block {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  border: 2px solid var(--logo-color);
+  padding: 5px 12px 6px;
+  border-radius: 2px;
+}
+
+.marriott-text {
+  font-size: 0.55rem;
+  font-weight: 800;
+  letter-spacing: 0.26em;
+  color: var(--logo-color);
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.bonvoy-text {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--logo-color);
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+// Nav links
+.nav-links {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  flex: 1;
+
+  @media (max-width: 900px) { display: none; }
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  color: var(--nav-link-color);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+  border-bottom: 3px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+  position: relative;
+  top: 3px; // visual alignment with border
+  &:hover { color: var(--nav-link-hover); border-bottom-color: #999; }
+  &.active { color: var(--nav-link-hover); font-weight: 700; border-bottom-color: var(--nav-active-border); }
+}
+
+// ── Member benefits band ──────────────────────────────────────────────────────
+.member-band {
+  background: $navy;
+  color: $white;
+  padding: 56px 20px;
+  text-align: center;
+}
+
+.member-band-inner {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.member-band-title {
+  font-size: 1.7rem;
+  font-weight: 700;
+  margin: 0 0 10px;
+  letter-spacing: -0.01em;
+}
+
+.member-band-sub {
+  font-size: 0.97rem;
+  color: rgba(255,255,255,0.7);
+  margin: 0 0 36px;
+}
+
+.member-perks {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 40px;
+  margin-bottom: 36px;
+}
+
+.perk {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: $white;
+
+  span {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.75);
+    text-transform: uppercase;
+  }
+
+  svg { opacity: 0.9; }
+}
+
+.member-actions {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.join-btn {
+  padding: 13px 32px;
+  background: $white;
+  color: $navy;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: background 0.2s, transform 0.15s;
+
+  &:hover { background: #f0f0f0; transform: translateY(-1px); }
+}
+
+.signin-ghost {
+  padding: 13px 32px;
+  background: transparent;
+  color: $white;
+  border: 2px solid rgba(255,255,255,0.6);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+
+  &:hover { border-color: $white; background: rgba(255,255,255,0.08); }
+}
+
+// ── Brand tiers section ──────────────────────────────────────────────────────
+.brands-section {
+  padding: 72px 20px;
+  background: var(--brands-bg);
+}
+
+.brands-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.brands-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--brands-title-color);
+  margin: 0 0 48px;
+}
+
+.brand-tiers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 32px;
+}
+
+.brand-tier {
+  border-top: 3px solid var(--tier-border);
+  padding-top: 18px;
+}
+
+.tier-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: var(--tier-label-color);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.tier-desc {
+  font-size: 0.82rem;
+  color: var(--tier-desc-color);
+  line-height: 1.5;
+  margin: 0 0 14px;
+}
+
+.tier-brands {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.brand-pill {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--pill-color);
+  background: var(--pill-bg);
+  border: 1px solid var(--pill-border);
+  border-radius: 3px;
+  padding: 4px 10px;
+  cursor: default;
+}

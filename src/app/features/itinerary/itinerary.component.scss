@@ -1,0 +1,307 @@
+// ── Variables ────────────────────────────────────────────────────
+$purple: #8B1D42;
+$purple-light: #ede9ff;
+$gold: #c9a84c;
+$text: #1a1a2e;
+$muted: #64748b;
+$border: #e5e7eb;
+$card-bg: #fff;
+$radius: 14px;
+
+// ── Generation screen ────────────────────────────────────────────
+.gen-screen {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+  display: flex; align-items: center; justify-content: center; padding: 24px;
+}
+
+.gen-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px;
+  backdrop-filter: blur(16px);
+  padding: 40px 48px;
+  max-width: 460px; width: 100%;
+  color: #fff; text-align: center;
+}
+
+.gen-brand {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  font-size: 1.1rem; font-weight: 700; letter-spacing: 1px;
+  color: rgba(255,255,255,0.7); margin-bottom: 24px;
+}
+
+.gen-title { font-size: 1.7rem; font-weight: 700; margin: 0 0 8px; }
+.gen-sub { font-size: 0.95rem; color: rgba(255,255,255,0.6); margin: 0 0 28px; }
+
+.gen-steps {
+  text-align: left; margin-bottom: 24px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.gen-step {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 0.9rem; color: rgba(255,255,255,0.4);
+  transition: all 0.3s;
+
+  .step-icon { width: 22px; text-align: center; }
+
+  &.active { color: #fff; font-weight: 600; }
+  &.done { color: rgba(255,255,255,0.65); }
+  &.done .step-icon { color: #4ade80; }
+}
+
+.spin { display: inline-block; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.gen-bar-wrap {
+  height: 6px; border-radius: 3px;
+  background: rgba(255,255,255,0.12); overflow: hidden; margin-bottom: 10px;
+}
+.gen-bar-fill {
+  height: 100%; background: linear-gradient(90deg, $purple, #a78bfa);
+  border-radius: 3px; transition: width 0.5s ease; min-width: 4px;
+}
+.gen-percent { font-size: 0.85rem; color: rgba(255,255,255,0.5); }
+
+// ── Itinerary page ──────────────────────────────────────────────
+.itin-page { min-height: 100vh; background: #f8f9fc; }
+
+// Hero
+.itin-hero {
+  position: relative; height: 340px;
+  background-size: cover; background-position: center;
+  display: flex; align-items: flex-end;
+}
+.hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+}
+.hero-content {
+  position: relative; z-index: 1;
+  padding: 32px 40px; color: #fff;
+}
+.hero-badge {
+  display: inline-block; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em;
+  background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+  backdrop-filter: blur(4px); border-radius: 20px; padding: 4px 12px;
+  margin-bottom: 10px; text-transform: uppercase;
+}
+.hero-title { font-size: 2.2rem; font-weight: 800; margin: 0 0 10px; }
+.hero-meta { font-size: 0.92rem; opacity: 0.85; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.sep { opacity: 0.5; }
+.back-btn {
+  position: absolute; top: 20px; left: 20px; z-index: 2;
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2);
+  color: #fff; font-size: 0.85rem; padding: 8px 14px; border-radius: 20px;
+  cursor: pointer; backdrop-filter: blur(4px);
+  &:hover { background: rgba(0,0,0,0.6); }
+}
+
+// Body
+.itin-body { max-width: 860px; margin: 0 auto; padding: 28px 20px 60px; }
+
+// Budget bar
+.budget-bar-card {
+  background: $card-bg; border-radius: $radius; border: 1px solid $border;
+  padding: 16px 20px; margin-bottom: 20px;
+}
+.budget-bar-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;
+}
+.budget-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.07em; color: $muted; font-weight: 600; flex: 1; }
+.budget-nums { font-size: 0.95rem; color: $text; }
+.budget-total { color: $muted; }
+.budget-remaining { font-size: 0.82rem; color: #16a34a; font-weight: 600; }
+.budget-track { height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden; }
+.budget-fill {
+  height: 100%; background: linear-gradient(90deg, $purple, #a78bfa);
+  border-radius: 4px; transition: width 0.6s ease;
+  &.over { background: linear-gradient(90deg, #ef4444, #f87171); }
+}
+
+// Special request banner
+.special-banner {
+  background: #fefce8; border: 1px solid #fde047; border-radius: 10px;
+  padding: 10px 16px; font-size: 0.9rem; color: #78350f;
+  display: flex; align-items: center; gap: 8px; margin-bottom: 20px;
+}
+
+// Day tabs
+.day-tabs {
+  display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 20px;
+  &::-webkit-scrollbar { height: 4px; }
+  &::-webkit-scrollbar-thumb { background: $border; border-radius: 2px; }
+}
+.day-tab {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 10px 16px; border-radius: 12px; cursor: pointer; white-space: nowrap;
+  background: $card-bg; border: 1.5px solid $border; color: $muted;
+  font-size: 0.82rem; transition: all 0.2s; flex-shrink: 0;
+
+  .tab-num { font-weight: 700; font-size: 0.88rem; }
+  .tab-date { font-size: 0.76rem; }
+  .tab-weather { font-size: 0.78rem; }
+
+  &.active {
+    background: $purple; border-color: $purple; color: #fff;
+    box-shadow: 0 4px 14px rgba(108,99,255,0.35);
+  }
+  &:hover:not(.active) { border-color: $purple; color: $purple; }
+}
+
+// Day budget bar
+.day-budget {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+  font-size: 0.83rem; color: $muted;
+}
+.day-budget-track {
+  flex: 1; height: 5px; background: #f1f5f9; border-radius: 3px; overflow: hidden;
+}
+.day-budget-fill {
+  height: 100%; background: linear-gradient(90deg, $purple, #a78bfa);
+  border-radius: 3px; transition: width 0.5s;
+}
+.day-budget-nums { font-size: 0.82rem; white-space: nowrap; }
+
+// Activity timeline
+.timeline { display: flex; flex-direction: column; gap: 14px; }
+
+.act-card {
+  display: flex; gap: 16px;
+  background: $card-bg; border-radius: $radius;
+  border: 1.5px solid $border; padding: 16px;
+  transition: box-shadow 0.2s, border-color 0.2s;
+
+  &:hover { box-shadow: 0 4px 18px rgba(0,0,0,0.07); }
+
+  &.hotel-svc { border-left: 4px solid $gold; background: linear-gradient(135deg, #fffef5, #fff); }
+  &.confirmed { border-color: #16a34a; background: linear-gradient(135deg, #f0fdf4, #fff); }
+  &.replaced { opacity: 0.4; }
+}
+
+.act-time {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  width: 52px; flex-shrink: 0; padding-top: 2px;
+}
+.time-start, .time-end { font-size: 0.75rem; font-weight: 700; color: $muted; }
+.time-line { flex: 1; width: 2px; background: $border; min-height: 20px; border-radius: 1px; }
+
+.act-body { flex: 1; }
+
+.act-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.act-title-row { display: flex; align-items: center; gap: 6px; }
+.check-icon { color: #16a34a; font-size: 0.9rem; font-weight: 700; }
+.hotel-icon { font-size: 0.9rem; }
+.act-title { font-size: 0.97rem; font-weight: 700; color: $text; }
+.act-cost { font-size: 0.85rem; font-weight: 600; color: $muted; white-space: nowrap; }
+.free-badge {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em;
+  background: #dcfce7; color: #16a34a; padding: 2px 7px; border-radius: 10px;
+}
+
+.act-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+
+.type-badge {
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 2px 8px; border-radius: 6px;
+
+  &.type-attraction  { background: #e0f2fe; color: #0369a1; }
+  &.type-dining      { background: #fef3c7; color: #92400e; }
+  &.type-leisure     { background: $purple-light; color: $purple; }
+  &.type-hotel_service { background: #fdf4ff; color: #7e22ce; }
+  &.type-transfer    { background: #f0fdf4; color: #166534; }
+}
+.weather-badge { font-size: 0.73rem; background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 6px; }
+.energy-badge {
+  font-size: 0.73rem; padding: 2px 8px; border-radius: 6px;
+  &.energy-low    { background: #dcfce7; color: #166534; }
+  &.energy-medium { background: #fef3c7; color: #92400e; }
+  &.energy-high   { background: #fee2e2; color: #991b1b; }
+}
+.svc-badge  { font-size: 0.73rem; background: #fdf4ff; color: #7e22ce; padding: 2px 8px; border-radius: 6px; }
+.ref-badge  { font-size: 0.73rem; background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 6px; font-weight: 700; }
+
+// Reasoning
+.act-reasoning { margin-top: 8px; }
+.why-toggle {
+  background: none; border: none; cursor: pointer;
+  font-size: 0.8rem; color: $purple; padding: 0; font-weight: 600;
+  &:hover { text-decoration: underline; }
+}
+.reasoning-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+.r-chip {
+  font-size: 0.72rem; background: $purple-light; color: $purple;
+  padding: 3px 9px; border-radius: 8px; font-style: italic;
+}
+
+// Booking ref row
+.booking-ref-row {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 0.8rem; color: #16a34a; margin-top: 8px;
+  svg { flex-shrink: 0; }
+}
+
+// Hotel service actions
+.svc-actions { display: flex; gap: 8px; margin-top: 10px; }
+.confirm-btn {
+  padding: 7px 18px; border-radius: 8px; font-size: 0.85rem; font-weight: 700;
+  background: $gold; border: none; color: #fff; cursor: pointer;
+  transition: opacity 0.2s;
+  &:hover { opacity: 0.85; }
+}
+.skip-btn {
+  padding: 7px 14px; border-radius: 8px; font-size: 0.85rem;
+  background: #f8f9fc; border: 1px solid $border; color: $muted; cursor: pointer;
+  &:hover { border-color: #ef4444; color: #ef4444; }
+}
+
+// Day total
+.day-total {
+  margin-top: 18px; font-size: 0.88rem; color: $muted; text-align: right;
+  strong { color: $text; }
+}
+
+// ── Replan bar ───────────────────────────────────────────────────
+.replan-bar {
+  margin-top: 28px; background: $card-bg; border: 1.5px solid $border;
+  border-radius: $radius; padding: 18px 20px;
+}
+.replan-header { font-size: 0.85rem; font-weight: 700; color: $muted; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+.quick-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.quick-btn {
+  padding: 6px 14px; font-size: 0.82rem; border-radius: 20px;
+  border: 1.5px solid $border; background: #f8f9fc; color: $text; cursor: pointer;
+  &:hover { border-color: $purple; color: $purple; background: $purple-light; }
+}
+.replan-input-row { display: flex; gap: 8px; }
+.replan-input {
+  flex: 1; padding: 10px 14px; border: 1.5px solid $border; border-radius: 10px;
+  font-size: 0.9rem; outline: none;
+  &:focus { border-color: $purple; box-shadow: 0 0 0 3px rgba(108,99,255,0.1); }
+}
+.replan-send {
+  padding: 10px 18px; border-radius: 10px; font-size: 1rem; font-weight: 700;
+  background: $purple; color: #fff; border: none; cursor: pointer;
+  &:hover:not(:disabled) { background: #5951e5; }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+.replan-result { margin-top: 10px; font-size: 0.85rem; color: #16a34a; font-weight: 600; }
+
+// ── Footer ───────────────────────────────────────────────────────
+.itin-footer { display: flex; justify-content: center; gap: 12px; padding: 24px 20px 40px; }
+.cta-btn {
+  padding: 12px 28px; border-radius: 10px; font-size: 0.95rem; font-weight: 700;
+  background: $purple; color: #fff; border: none; cursor: pointer;
+  &.secondary { background: #fff; color: $text; border: 1.5px solid $border; }
+  &:hover { opacity: 0.9; }
+}
+
+// ── Empty page ───────────────────────────────────────────────────
+.empty-page {
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center; padding: 40px;
+  .empty-icon { font-size: 3rem; margin-bottom: 16px; }
+  h2 { font-size: 1.6rem; font-weight: 800; color: $text; margin: 0 0 10px; }
+  p { font-size: 0.95rem; color: $muted; max-width: 380px; margin: 0 auto 24px; }
+}
