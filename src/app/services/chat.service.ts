@@ -485,7 +485,7 @@ export class ChatService {
           { label: '🍝 Continental', value: 'CONTINENTAL' },
           { label: '🥡 Street Food', value: 'STREET_FOOD' },
           { label: '🥂 Fine Dining', value: 'FINE_DINING' },
-          { label: '✅ No Preference', value: 'NO_PREFERENCE' },
+          { label: 'No Preference', value: 'NO_PREFERENCE' },
         ],
         multiSelect: true,
       }, 700);
@@ -504,7 +504,7 @@ export class ChatService {
           { label: '🌶 Spicy Food', value: 'SPICY_FOOD' },
           { label: '🚗 Long Drives', value: 'LONG_DRIVES' },
           { label: '💸 Budget Strain', value: 'BUDGET_STRAIN' },
-          { label: '✅ None', value: 'NONE' },
+          { label: 'None', value: 'NONE' },
         ],
         multiSelect: true,
       }, 700);
@@ -535,7 +535,7 @@ export class ChatService {
           { label: '💪 Gym', value: 'GYM' },
           { label: '🚗 Airport Transfer', value: 'AIRPORT_TRANSFER' },
           { label: '🎭 Cultural Experience', value: 'CULTURAL_EXPERIENCE' },
-          { label: '✅ None', value: 'NONE' },
+          { label: 'None', value: 'NONE' },
         ],
         multiSelect: true,
       }, 700);

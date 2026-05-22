@@ -8,9 +8,8 @@ $r-xl:     20px;
 // ── FAB wrap ─────────────────────────────────────────────────────
 .chat-fab-wrap {
   position: fixed;
-  top: 50%;
+  bottom: 28px;
   right: 24px;
-  transform: translateY(-50%);
   z-index: 9999;
 }
 
